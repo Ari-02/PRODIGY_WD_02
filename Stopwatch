@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>STOP WATCH</title>
+	<style>
+		body{
+			background-image: Linear-gradient(#28A599 0%,#32A095 30%,#2B9D93 60%,#009788 80%);
+			color:white;
+			}
+		.container{
+			display:flex;
+			flex-direction:column;
+			align-items:center;
+			margin-top:9px;
+			}
+		h1{
+		    color:#444444;
+			font-size:4rem;
+			text-shadow: 2px 2px #DDDDDD;
+			}
+		.time{
+			font-size:3rem;
+			text-shadow: 2px 2px #444444;
+			}
+       #time{
+			display:flex;
+			height:300px;
+			width:300px;
+			border-radius:50%;
+			border:8px double white;
+			justify-content:center;
+			align-items:center;
+			}
+		#buttons{
+			display:flex;
+			width:100%;
+			justify-content:center;
+			margin-right:30px;
+			}
+        button{
+			background-color:#444444;
+			color:#F0EEEE;
+            width:20%;
+			height:60px;
+			border:1px solid #DDDDDD;
+			border-radius: 10px 100px / 120px;
+			margin:20px;
+			font-size:20px;
+			}
+    </style>
+</head>
+<body>
+	<div class="container"> 
+        <h1>Stopwatch</h1> 
+        <div id="time"> 
+            <span class="time" id="hour">00</span>: 
+            <span class="time" id="min">00</span>:
+            <span class="time" id="sec">00</span>.
+            <span class="time" id="ms">00</span> 
+        </div> 
+        <div id="buttons"> 
+            <button class="btn" id="start">START</button> 
+            <button class="btn" id="stop">STOP</button> 
+            <button class="btn" id="lap">LAP</button> 
+            <button class="btn" id="reset">RESET</button> 
+        </div> 
+        <div id="laps"></div>
+    </div> 
+<script>
+    let timer;
+    let hours = 0;
+    let minutes = 0;
+    let seconds = 0;
+    let milliseconds = 0;
+
+    function start() {
+        timer = setInterval(updateTime, 10);
+    }
+
+    function stop() {
+        clearInterval(timer);
+    }
+
+ function lap() {
+    const lapTime = formatTime();
+    const lapOutput = document.createElement('p');
+    lapOutput.textContent = lapTime;
+    document.getElementById('laps').appendChild(lapOutput);
+}
+
+function formatTime() {
+    return `${padTime(hours)}:${padTime(minutes)}:${padTime(seconds)}.${padTimeMilliseconds(milliseconds)}`;
+}
+    function reset() {
+        clearInterval(timer);
+        hours = minutes = seconds = milliseconds = 0;
+        updateDisplay();
+        const lapsContainer = document.getElementById('laps');
+        while (lapsContainer.firstChild) {
+            lapsContainer.removeChild(lapsContainer.firstChild);
+        }
+    }
+    function updateTime() {
+        milliseconds += 10;
+        if (milliseconds === 1000) {
+            milliseconds = 0;
+            seconds++;
+            if (seconds === 60) {
+                seconds = 0;
+                minutes++;
+                if (minutes === 60) {
+                    minutes = 0;
+                    hours++;
+                }
+            }
+        }
+        updateDisplay();
+    }
+    function updateDisplay() {
+        document.getElementById('hour').textContent = padTime(hours);
+        document.getElementById('min').textContent = padTime(minutes);
+        document.getElementById('sec').textContent = padTime(seconds);
+        document.getElementById('ms').textContent = padTimeMilliseconds(milliseconds);
+    }
+    function padTime(value) {
+        return value < 10 ? `0${value}` : value;
+    }
+    function padTimeMilliseconds(value) {
+        return value < 10 ? `0${value}` : (value < 100 ? `${value}` : `${value}`).slice(0, 2);
+    }
+    document.getElementById('start').addEventListener('click', start);
+    document.getElementById('stop').addEventListener('click', stop);
+    document.getElementById('lap').addEventListener('click', lap);
+    document.getElementById('reset').addEventListener('click', reset);
+</script>
+
+</body>
+</html>
